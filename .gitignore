@@ -1,0 +1,6 @@
+TACO/
+
+__pycache__/
+*.pyc
+*.pyo
+
