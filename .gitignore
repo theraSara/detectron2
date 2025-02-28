@@ -6,3 +6,6 @@ __pycache__/
 
 sr_env/
 effdet_env/
+.venv/
+detectron2/
+taco_dataset/

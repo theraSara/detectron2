@@ -1,24 +1,37 @@
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from PIL import Image
-import pathlib
-import os
-import random
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, MaxPool2D
-from tensorflow.keras import Model, layers, models, Input
-from tensorflow.keras.utils import plot_model
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
-import warnings
-warnings.filterwarnings('ignore')
+import json
 
-dataset = '/kaggle/input/trash-type-detection/trash_images/'
-dataset_dir = pathlib.Path(dataset)
+with open(r"C:\Users\PC\OneDrive\Documents\SR\smart-recycling-detection\TACO\data\annotations.json", "r") as file:
+    annotations = json.load(file)
 
-class_names = os.listdir(dataset_dir)
-print(class_names)
+# Print out some details about the annotations
+print(json.dumps(annotations, indent=4))
+
+
+# Example: Convert annotations to COCO format
+coco_format = {
+    "images": [],
+    "annotations": [],
+    "categories": [{"id": 1, "name": "recyclable"}, {"id": 2, "name": "non_recyclable"}]
+}
+
+for img_info in annotations['images']:
+    coco_format['images'].append({
+        'id': img_info['id'],
+        'file_name': img_info['file_name'],
+        'width': img_info['width'],
+        'height': img_info['height']
+    })
+
+for ann in annotations['annotations']:
+    coco_format['annotations'].append({
+        'image_id': ann['image_id'],
+        'category_id': ann['category_id'],
+        'bbox': ann['bbox'],
+        'area': ann['area'],
+        'iscrowd': ann['iscrowd']
+    })
+
+# Save the COCO formatted annotations
+with open("coco_annotations.json", "w") as f:
+    json.dump(coco_format, f)
+
